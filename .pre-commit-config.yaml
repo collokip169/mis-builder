@@ -123,3 +123,9 @@ repos:
       - id: pylint_odoo
         args:
           - --rcfile=.pylintrc-mandatory
+  - repo: https://github.com/OCA/odoo-pre-commit-hooks
+    rev: v0.0.33
+    hooks:
+          - id: oca-checks-odoo-module
+          - id: oca-checks-po
+            args: [ "--fix" ]

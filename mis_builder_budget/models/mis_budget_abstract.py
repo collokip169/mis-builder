@@ -1,8 +1,5 @@
-# Copyright 2017-2020 ACSONE SA/NV
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-
 from odoo import _, api, fields, models
-
+from datetime import datetime
 
 class MisBudgetAbstract(models.AbstractModel):
     _name = "mis.budget.abstract"
@@ -24,6 +21,18 @@ class MisBudgetAbstract(models.AbstractModel):
         comodel_name="res.company",
         string="Company",
         default=lambda self: self.env.company,
+    )
+    quarter = fields.Selection(
+        [
+            ("q1", "Q1 (January - March)"),
+            ("q2", "Q2 (April - June)"),
+            ("q3", "Q3 (July - September)"),
+            ("q4", "Q4 (October - December)"),
+        ],
+        string="Quarter",
+        compute="_compute_quarter",
+        store=True,
+        readonly=True,
     )
 
     def copy(self, default=None):
@@ -50,6 +59,22 @@ class MisBudgetAbstract(models.AbstractModel):
                     or rec.date_to != rec.date_range_id.date_end
                 ):
                     rec.date_range_id = False
+
+    @api.depends("date_from")
+    def _compute_quarter(self):
+        for rec in self:
+            if rec.date_from:
+                month = rec.date_from.month
+                if 1 <= month <= 3:
+                    rec.quarter = "q1"
+                elif 4 <= month <= 6:
+                    rec.quarter = "q2"
+                elif 7 <= month <= 9:
+                    rec.quarter = "q3"
+                else:
+                    rec.quarter = "q4"
+            else:
+                rec.quarter = False
 
     def action_draft(self):
         self.write({"state": "draft"})
