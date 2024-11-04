@@ -133,6 +133,19 @@ class MisReportInstancePeriod(models.Model):
                 record.date_from = fields.Date.to_string(date_from)
                 record.date_to = fields.Date.to_string(date_to)
                 record.valid = True
+
+            elif record.mode == MODE_REL and record.type == "q":  # Quarterly period logic
+                date_from = d.replace(day=1)
+                date_from = date_from + relativedelta(months=record.offset * 3)
+                date_to = (
+                    date_from
+                    + relativedelta(months=(record.duration * 3) - 1)
+                    + relativedelta(day=31)
+                )
+                record.date_from = fields.Date.to_string(date_from)
+                record.date_to = fields.Date.to_string(date_to)
+                record.valid = True
+
             elif record.mode == MODE_REL and record.type == "date_range":
                 date_range_obj = record.env["date.range"]
                 current_periods = date_range_obj.search(
@@ -190,16 +203,18 @@ class MisReportInstancePeriod(models.Model):
             ("d", _("Day")),
             ("w", _("Week")),
             ("m", _("Month")),
+            ("q", _("quarterly")),
             ("y", _("Year")),
             ("date_range", _("Date Range")),
         ],
         string="Period type",
     )
-    is_ytd = fields.Boolean(
+    is_ytd = (
+        fields.Boolean(
         default=False,
         string="Year to date",
         help="Forces the start date to Jan 1st of the relevant year",
-    )
+    ))
     date_range_type_id = fields.Many2one(
         comodel_name="date.range.type",
         string="Date Range Type",

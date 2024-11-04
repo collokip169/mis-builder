@@ -380,8 +380,8 @@
                                 invisible="type != 'date_range'"
                                 required="type == 'date_range' and mode == 'relative'"
                             />
-                            <field name="offset" />
-                            <field name="duration" />
+                            <field name="offset" string="Offset (Quarters)" attrs="{'invisible': [('type', '!=', 'q')]}"/>
+                            <field name="duration" string="Duration (Quarters)" attrs="{'invisible': [('type', '!=', 'q')]}"/>
                         </group>
                         <group>
                             <field name="date_from" />
