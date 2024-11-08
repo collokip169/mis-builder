@@ -134,17 +134,9 @@ class MisReportInstancePeriod(models.Model):
                 record.date_to = fields.Date.to_string(date_to)
                 record.valid = True
 
-            elif record.mode == MODE_REL and record.type == "Q":  # Quarterly period logic
-                date_from = d.month(month=1)
+            elif record.mode == MODE_REL and record.type == "Q":
+                date_from = d.replace(quarter=1, day=1)
                 date_from = date_from + relativedelta(months=record.offset * 3)
-                if d.month in [1, 2, 3]:
-                    date_from = d.replace(month=1, day=1)  # Q1
-                elif d.month in [4, 5, 6]:
-                    date_from = d.replace(month=4, day=1)  # Q2
-                elif d.month in [7, 8, 9]:
-                    date_from = d.replace(month=7, day=1)  # Q3
-                else:
-                    date_from = d.replace(month=10, day=1)  # Q4
                 date_to = (
                     date_from
                     + relativedelta(months=(record.duration * 3) - 1)
@@ -153,7 +145,6 @@ class MisReportInstancePeriod(models.Model):
                 record.date_from = fields.Date.to_string(date_from)
                 record.date_to = fields.Date.to_string(date_to)
                 record.valid = True
-
             elif record.mode == MODE_REL and record.type == "date_range":
                 date_range_obj = record.env["date.range"]
                 current_periods = date_range_obj.search(
