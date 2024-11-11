@@ -373,16 +373,18 @@
                     </group>
                     <group name="relative" invisible="mode != 'relative'" colspan="4">
                         <group>
-                            <field name="type" required="mode == 'relative'" />
+                            <field name="type"  required="mode == 'relative'" />
+                            <field name="date_from" attrs="{'invisible': [('type', '!=', 'date_range')]}"/>
+                            <field name="date_to" attrs="{'invisible': [('type', '!=', 'date_range')]}"/>
                             <field name="is_ytd" />
                             <field
                                 name="date_range_type_id"
                                 invisible="type != 'date_range'"
                                 required="type == 'date_range' and mode == 'relative'"
                             />
-                            <field name="offset" string="Offset (Quarters)" attrs="{'invisible': [('type', '!=', 'q')]}"/>
-                            <field name="duration" string="Duration (Quarters)" attrs="{'invisible': [('type', '!=', 'q')]}"/>
-                        </group>
+                            <field name="offset" />
+                            <field name="duration"/>
+                        <group>
                         <group>
                             <field name="date_from" />
                             <field name="date_to" />

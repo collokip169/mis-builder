@@ -139,7 +139,7 @@ class MisReportInstancePeriod(models.Model):
                 date_from = date_from + relativedelta(months=record.offset * 3)
                 date_to = (
                     date_from
-                    + relativedelta(months=(record.duration * 3) - 1)
+                    + relativedelta(months=(record.duration * 3) + 1)
                     + relativedelta(day=31)
                 )
                 record.date_from = fields.Date.to_string(date_from)
